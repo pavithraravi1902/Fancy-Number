@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Fancy Numbers</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+
+      label {
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      select {
+        padding: 8px;
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+
+      #selectedFancy {
+        margin-top: 20px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+      }
+
+      th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Select Any type of Fancy Number</h1>
+    <label for="digit">Select digit:</label>
+    <select id="digit">
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+      <option value="7">7</option>
+    </select>
+    <label for="fancy">Choose any one:</label>
+    <select id="fancy">
+      <option value="sameOccurrence">Same Occurrence</option>
+      <option value="pairOccurrence">Pair Occurrence</option>
+      <option value="palindrome">Palindrome</option>`
+      <!-- <option value="primeNumber">Prime Number</option> -->
+      <option value="tripleOccurrence">Triple Occurrence</option>
+      <option value="allOdd">All Odd</option>
+      <option value="allEven">All Even</option>
+      <option value="alternativeOddEven">Alternative Odd Even</option>
+    </select>
+    <div id="selectedFancy"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const digitSelect = document.getElementById("digit");
+        const fancySelect = document.getElementById("fancy");
+        const selectedFancyDiv = document.getElementById("selectedFancy");
+
+        // Event listeners for dropdown changes
+        digitSelect.addEventListener("change", updateSelectedFancy);
+        fancySelect.addEventListener("change", updateSelectedFancy);
+
+        // Populate number collections based on selected digit
+        function populateCollections(digit) {
+          const start = Math.pow(10, digit - 1);
+          const end = Math.pow(10, digit) - 1;
+          const numbers = [];
+          for (let i = start; i <= end; i++) {
+            numbers.push(i);
+          }
+          return numbers;
+        }
+
+        // Helper function - check if a number is palindrome
+        function isPalindrome(num) {
+          const numStr = String(num);
+          return numStr === numStr.split("").reverse().join("");
+        }
+
+        // Helper function - check if a number is prime
+        function isPrime(num) {
+          // if (num <= 1) return false;
+          // if (num <= 3) return true;
+          // if (num % 2 === 0 || num % 3 === 0) return false;
+          // for (let i = 5; i * i <= num; i += 6) {
+          //   if (num % i === 0 || num % (i + 2) === 0) return false;
+          // }
+          // return true;
+        }
+
+        // Update the selected fancy numbers display
+        function updateSelectedFancy() {
+          const digit = parseInt(digitSelect.value);
+          const selectedMode = fancySelect.value;
+          const numberCollection = populateCollections(digit);
+          let selectedCollection = [];
+
+          switch (selectedMode) {
+            case "sameOccurrence":
+              selectedCollection = numberCollection.filter(hasSameOccurrence);
+              break;
+            case "pairOccurrence":
+              selectedCollection = numberCollection.filter(hasPairOccurrence);
+              break;
+            case "palindrome":
+              selectedCollection = numberCollection.filter(isPalindrome);
+              break;
+            case "primeNumber":
+              selectedCollection = numberCollection.filter(isPrime);
+              break;
+            case "tripleOccurrence":
+              selectedCollection = numberCollection.filter(hasTripleOccurrence);
+              break;
+            case "allOdd":
+              selectedCollection = numberCollection.filter(allOdd);
+              break;
+            case "allEven":
+              selectedCollection = numberCollection.filter(allEven);
+              break;
+            case "alternativeOddEven":
+              selectedCollection = numberCollection.filter(allEven);
+              break;
+            default:
+              break;
+          }
+
+          displaySelectedFancy(selectedCollection);
+        }
+
+        // Helper function - check if a number has same occurrence of digits
+        function hasSameOccurrence(num) {
+          const digits = String(num).split("");
+          const firstDigit = digits[0];
+          return digits.every((digit) => digit === firstDigit);
+        }
+
+        // Helper function - check if a number has pair occurrence of digits
+        function hasPairOccurrence(num) {
+          const numStr = String(num);
+          for (let i = 0; i < numStr.length - 1; i++) {
+            if (numStr[i] === numStr[i + 1] && numStr[i] !== numStr[i + 2]) {
+              return true;
+            }
+          }
+          return false;
+        }
+
+        // Helper function - check if a number has triple occurrence of digits
+        function hasTripleOccurrence(num) {
+          const numStr = String(num);
+          for (let i = 0; i < numStr.length - 2; i++) {
+            if (numStr[i] === numStr[i + 1] && numStr[i] === numStr[i + 2]) {
+              return true;
+            }
+          }
+          return false;
+        }
+
+        // Helper function - check if a number is all odd
+        function allOdd(num) {
+          const numStr = String(num);
+          return numStr.split("").every((char) => parseInt(char) % 2 !== 0);
+        }
+
+        // Helper function - check if a number is all even
+        function allEven(num) {
+          const numStr = String(num);
+          return numStr.split("").every((char) => parseInt(char) % 2 === 0);
+        }
+
+        // Helper function - check if a number is alternative odd even
+        function alternativeOddEven(num) {
+          const numStr = String(num);
+          return numStr.split("").every((char, index) => {
+            if (index % 2 == 0) {
+              return parseInt(char) % 2 === 0;
+            } else if (index % 2 !== 0) {
+              return parseInt(char) % 2 !== 0;
+            }
+          });
+        }
+
+          // Helper function - check if a sum of number is 5
+          function sumOfNumberIsFive(num) {
+          const numStr = String(num);
+          return numStr.split("").every((char, index) => {
+            if (index % 2 == 0) {
+              return parseInt(char) % 2 === 0;
+            } else if (index % 2 !== 0) {
+              return parseInt(char) % 2 !== 0;
+            }
+          });
+        }
+
+        // Display selected fancy numbers in a table
+        function displaySelectedFancy(collection) {
+          selectedFancyDiv.innerHTML = "";
+          const table = document.createElement("table");
+          const headerRow = table.insertRow();
+          headerRow.insertCell().textContent = "Index";
+          headerRow.insertCell().textContent = "Number";
+
+          collection.forEach((number, index) => {
+            const row = table.insertRow();
+            row.insertCell().textContent = index + 1;
+            row.insertCell().textContent = number;
+          });
+          selectedFancyDiv.appendChild(table);
+        }
+        updateSelectedFancy();
+      });
+    </script>
+  </body>
+</html>
